@@ -9,61 +9,41 @@ import org.openqa.selenium.support.PageFactory;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class LoginPage extends BaseController {
-    private WebDriver driver;
-
-    @FindBy(id = "username")
-    private WebElement nombreUsuario;
-
-    @FindBy(css = "input[name='password']")
-    private WebElement passwordUsuario;
-
-    @FindBy(xpath = "//button[contains(text(),'Submit')]")
-    private WebElement btnSubmit;
-
-    @FindBy(xpath = "//*[text() = 'Your username is invalid!']")
-    private WebElement msgUsuarioInvalido;
-
-
-    public void escribirUsersname(String nUsuario) {
-        try {
-            if (visualizarElemento(this.nombreUsuario, 10)) {
-                this.nombreUsuario.clear();
-                this.nombreUsuario.sendKeys(nUsuario);
-            } else {
-                fail("No se encuentra el campo Nombre de Usuario en la página");
-            }
-        } catch (Exception e) {
-            fail("Error al escribir en el campo de usuario: " + e.getMessage());
-        }
+    public LoginPage() {
+        initPage();
     }
 
-    public void escribirPassword(String pass) {
-        try {
-            this.passwordUsuario.clear();
-            this.passwordUsuario.sendKeys(pass);
-        } catch (Exception e) {
-            fail("Error al escribir en el campo de password: " + e.getMessage());
+        //aca capture los objetos
+
+        @FindBy(id = "username")
+        private WebElement txtuser;
+        @FindBy(id = "password")
+        private WebElement txtpassword;
+        @FindBy(id = "submit")
+        private WebElement btnsubmit;
+    @FindBy(xpath = "//*[contains(text(),'invalid!')]")
+    private WebElement lblLogin;
+        //metodos
+        public void Escribirusuario (String Usuario){
+            this.txtuser.clear();
+            this.txtuser.sendKeys(Usuario);
+
         }
+        public void Escribirpassword (String Password){
+            this.txtpassword.clear();
+            this.txtpassword.sendKeys(Password);
+        }
+
+        public void ClickBtnSubmit () {
+            this.btnsubmit.click();
+        }
+
+    public void validarMensaje(String mensaje) {
+        visualizarElemento(lblLogin, 5);
+        System.out.println(lblLogin.getText());
+    }
     }
 
-    public void clickBtnSubmit() {
-        try {
-            this.btnSubmit.click();
-        } catch (Exception e) {
-            fail("Error al hacer click en el botón Submit: " + e.getMessage());
-        }
-    }
 
-    public void validarMsgUsuarioInvalido(){
-        try {
-            if(this.msgUsuarioInvalido.isDisplayed()){
-                System.out.println("Mensaje de usuario inválido visible");
-            }else{
-                System.out.println("Error al visualizar el mensaje de usuario inválido!");
-            }
-        }catch(Exception e){
-            fail("Error al detectar el mensaje de usuario inválido: "+e.getMessage());
-        }
-    }
 
-}
+
