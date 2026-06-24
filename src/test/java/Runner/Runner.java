@@ -10,7 +10,9 @@ import org.junit.runner.RunWith;
         glue = {"StepDefinition"},
         plugin = {"pretty", "html:target/cucumber-report.html"},
         monochrome = true,
-        tags = "@testCase_3"
+        tags = "@SubMenu"
+
+        // "@MenuSuperior" or @MenuDos or @SubMenu"
 )
 public class Runner {
 }
