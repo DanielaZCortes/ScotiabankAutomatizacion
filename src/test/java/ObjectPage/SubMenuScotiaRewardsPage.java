@@ -16,12 +16,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class SubMenuScotiaRewardsPage extends BaseController {
     private WebDriver driver;
-    //contructor
-    public SubMenuScotiaRewardsPage(){
-        driver =
-                DriverContext.getDriver();
-        PageFactory.initElements(driver, this);
-    }
+
 
     @FindBy(xpath="//*[@id=\"siteContent\"]/div/div/div[2]/header/nav/div/div[3]/div/div/div/nav/ul/li[2]/a")
     private WebElement ScotiaRewards ;

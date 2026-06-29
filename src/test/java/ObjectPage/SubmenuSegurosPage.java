@@ -10,12 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class SubmenuSegurosPage extends BaseController {
     private WebDriver driver;
-    //contructor
-    public SubmenuSegurosPage(){
-        driver =
-                DriverContext.getDriver();
-        PageFactory.initElements(driver, this);
-    }
+
 
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/div[1]/header/nav/div/div[3]/div/div/div/nav/ul/li[5]/a")
     private WebElement Seguros;

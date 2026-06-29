@@ -11,12 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import javax.xml.xpath.XPath;
 
 public class MenuSuperiorPage extends BaseController {
-    //contructor
-    public MenuSuperiorPage(){
-        driver =
-                DriverContext.getDriver();
-        PageFactory.initElements(driver, this);
-    }
+
 
     private WebDriver driver;
 

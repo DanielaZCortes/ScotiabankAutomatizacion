@@ -11,12 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class SubmenuCoachingFinancieroPage extends BaseController {
     private WebDriver driver;
-    //contructor
-    public SubmenuCoachingFinancieroPage(){
-        driver =
-                DriverContext.getDriver();
-        PageFactory.initElements(driver, this);
-    }
+
 
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/div[2]/header/nav/div/div[3]/div/div/div/nav/ul/li[8]/a")
     private WebElement CoachingFinanciero;

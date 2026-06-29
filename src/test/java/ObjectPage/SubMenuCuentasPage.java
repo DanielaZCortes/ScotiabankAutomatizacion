@@ -10,12 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class SubMenuCuentasPage extends BaseController {
     private WebDriver driver;
-    //contructor
-    public SubMenuCuentasPage(){
-        driver =
-                DriverContext.getDriver();
-        PageFactory.initElements(driver, this);
-    }
+
 
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/div[2]/header/nav/div/div[3]/div/div/div/nav/ul/li[3]/a")
     private WebElement Cuentas;

@@ -7,12 +7,15 @@ import io.cucumber.java.en.Given;
 import org.junit.Assert;
 
 public class NavDefinition {
+
     @Given("abrir el navegador en la url {string}")
     public void abrirNavegador(String url) throws InterruptedException {
 
         String nav = System.getProperty("nav", "default");
         Navegador navegador = NavSelector.seleccionNavegador(nav);
+        System.out.println("Entro al metodo abrirnavegador");
         DriverContext.setUp(navegador, url);
+        System.out.println("Driver creado");
         Thread.sleep(5000);
 
         String urlActual = DriverContext.getDriver().getCurrentUrl();
