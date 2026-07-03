@@ -11,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.JavascriptExecutor;
 import org.junit.Assert;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.Select;
 
 public class MasSueldoPage extends BaseController {
     private WebDriver driver;
@@ -22,7 +23,7 @@ public class MasSueldoPage extends BaseController {
 
     @FindBy(css = "a[data-ide='mas-sueldo']")
     private WebElement MasSueldo;
-    @FindBy(css = "a[data-name='hazte-cliente']")
+    @FindBy(xpath = "//a[contains(text(),'Únete a Scotia')]")
     private WebElement UneteaScotia;
     @FindBy(xpath = "//*[@id=\"dataEntry_title\"]")
     private WebElement Ingresatusdatos;
@@ -32,11 +33,11 @@ public class MasSueldoPage extends BaseController {
     private WebElement Numerodeserie;
     @FindBy(xpath = "//*[@id=\"dataEntry_salary-input\"]")
     private WebElement RentaLiquida;
-    @FindBy(xpath = "//*[@id=\"dataEntry_inputs_container\"]/div[4]/div/div/label")
+    @FindBy(css = "select[data-testid='data_entry_nationality']")
     private WebElement Nacionalidad;
-    @FindBy(xpath = "//*[@id=\"dataEntry_inputs_container\"]/div[5]/div/div/label")
-    private WebElement Situacionlaboral;
-    @FindBy(xpath = "//*[@id=\"dataEntry_inputs_container\"]/div[6]/div/div/label")
+    @FindBy(id = "data_entry_occupationStatus")
+    private WebElement SituacionLaboral;
+    @FindBy(id = "data_entry_occupation")
     private WebElement Ocupacion;
     @FindBy(xpath = "//*[@id=\"dataEntry_rutReferido-input\"]")
     private WebElement Referidoopcional;
@@ -44,7 +45,7 @@ public class MasSueldoPage extends BaseController {
     private WebElement TituloAcuerdodePrivacidad;
     @FindBy(xpath = "//*[@id=\"dataEntry_btn_continue\"]")
     private WebElement AutorizaryContinuar;
-    @FindBy(xpath = "//*[@id=\"modal-dialog\"]")
+    @FindBy(xpath = "//*[@id='modal-dialog-label']")
     private WebElement Mensaje;
     //losbeneficios
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/section/div/div/div[1]/div/div/div[1]")
@@ -53,7 +54,7 @@ public class MasSueldoPage extends BaseController {
     private WebElement TasasPreferenciales;
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/section/div/div/div[1]/div/div/div[2]/div/div[2]/p")
     private WebElement SegurodeCesantia;
-    @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/section/div/div/div[1]/div/div/div[2]/div/div[3]/p")
+    @FindBy(xpath = "//*[contains(text(),'Misiones ScotiaRewards')]")
     private WebElement MisionesScotiaRewards;
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/section/div/div/div[2]/div[1]/div/p")
     private WebElement Hasta50000ScotiaPesos;
@@ -68,6 +69,8 @@ public class MasSueldoPage extends BaseController {
     private WebElement tituloTablaBeneficios;
     @FindBy(xpath = "//img[contains(@src,'massueldo-tabla')]")
     private WebElement tablaBeneficios;
+    @FindBy(xpath = "//*[contains(text(),'Conoce todos los beneficios')]")
+    private WebElement conoceTodosLosBeneficios;
     @FindBy(xpath = "//*[contains(text(),'CON TARJETA DE CRÉDITO')]")
     private WebElement beneficiosConTarjeta;
     @FindBy(xpath = "//*[contains(text(),'SIN TARJETA DE CRÉDITO')]")
@@ -118,29 +121,27 @@ public class MasSueldoPage extends BaseController {
     }
 
     public void seleccionarUneteaScotia() {
+
+        JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
+
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", UneteaScotia);
+
         try {
-            visualizarElemento(UneteaScotia, 10);
-            UneteaScotia.click();
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            System.out.println("Se hizo clic en Únete a Scotia.");
+        js.executeScript("arguments[0].click();", UneteaScotia);
 
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            for (String ventana : DriverContext.getDriver().getWindowHandles()) {
-                DriverContext.getDriver().switchTo().window(ventana);
-            }
-
-            System.out.println("Cambió a la pestaña: "
-                    + DriverContext.getDriver().getCurrentUrl());
-
-        } catch (Exception e) {
-            System.out.println("Error al seleccionar Únete a Scotia: "
-                    + e.getMessage());
-            throw e;
+        for (String ventana : DriverContext.getDriver().getWindowHandles()) {
+            DriverContext.getDriver().switchTo().window(ventana);
         }
     }
 
@@ -153,34 +154,55 @@ public class MasSueldoPage extends BaseController {
 
     public void seleccionarIngresaRUT(String rut) {
 
-        visualizarElemento(RUT, 30);
+        visualizarElemento(RUT, 10);
 
+        JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
+        js.executeScript("arguments[0].scrollIntoView({block:'center'});", RUT);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         RUT.click();
         RUT.clear();
         RUT.sendKeys(rut);
 
-        System.out.println("Se ingresó el RUT.");
-
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void seleccionarIngresaNumerodeserie(String numeroSerie) {
         try {
-            if (Numerodeserie != null) {
-                visualizarElemento(Numerodeserie, 10);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if (Numerodeserie == null) {
+                throw new NullPointerException("El elemento Numerodeserie es null.");
+            }
+
+            visualizarElemento(Numerodeserie, 10);
+
+            JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
+            js.executeScript("arguments[0].scrollIntoView({block:'center'});", Numerodeserie);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (Numerodeserie.isDisplayed() && Numerodeserie.isEnabled()) {
                 Numerodeserie.click();
                 Numerodeserie.clear();
                 Numerodeserie.sendKeys(numeroSerie);
 
                 System.out.println("Se ingresó el número de serie.");
             } else {
-                throw new NullPointerException("El elemento Numerodeserie es null.");
+                throw new RuntimeException("El campo Número de Serie no está habilitado.");
             }
+
         } catch (NullPointerException e) {
             System.out.println("Error: " + e.getMessage());
             throw e;
@@ -189,6 +211,7 @@ public class MasSueldoPage extends BaseController {
             throw e;
         }
     }
+
     public void seleccionarIngresaRentaLiquida(String rentaLiquida) {
         visualizarElemento(RentaLiquida, 10);
         RentaLiquida.click();
@@ -197,44 +220,34 @@ public class MasSueldoPage extends BaseController {
 
         System.out.println("Se ingresó la renta líquida.");
     }
-
     public void seleccionarIngresaNacionalidad(String nacionalidad) {
 
-        visualizarElemento(Nacionalidad,10);
+        visualizarElemento(Nacionalidad, 10);
 
-        Nacionalidad.click();
-
-        Nacionalidad.sendKeys(nacionalidad);
-
-        Nacionalidad.sendKeys(Keys.ENTER);
+        Select select = new Select(Nacionalidad);
+        select.selectByVisibleText(nacionalidad);
 
         System.out.println("Nacionalidad seleccionada: " + nacionalidad);
     }
 
     public void seleccionarIngresaSituacionlaboral(String situacion) {
 
-        visualizarElemento(Situacionlaboral,10);
+        visualizarElemento(SituacionLaboral, 10);
 
-        Situacionlaboral.click();
+        Select select = new Select(SituacionLaboral);
+        select.selectByVisibleText(situacion);
 
-        Situacionlaboral.sendKeys(situacion);
-
-        Situacionlaboral.sendKeys(Keys.ENTER);
-
-        System.out.println("Situación laboral: " + situacion);
+        System.out.println("Situación laboral seleccionada: " + situacion);
     }
 
     public void seleccionarIngresaOcupacion(String ocupacion) {
 
-        visualizarElemento(Ocupacion,10);
+        visualizarElemento(Ocupacion, 10);
 
-        Ocupacion.click();
+        Select select = new Select(Ocupacion);
+        select.selectByVisibleText(ocupacion);
 
-        Ocupacion.sendKeys(ocupacion);
-
-        Ocupacion.sendKeys(Keys.ENTER);
-
-        System.out.println("Ocupación: " + ocupacion);
+        System.out.println("Ocupación seleccionada: " + ocupacion);
     }
 
     public void seleccionarIngresaReferidoopcional(String referido) {
@@ -258,7 +271,7 @@ public class MasSueldoPage extends BaseController {
 
     public void verificarMensaje(String mensaje) {
 
-        visualizarElemento(Mensaje,10);
+        visualizarElemento(Mensaje, 10);
 
         Assert.assertTrue(Mensaje.getText().contains(mensaje));
     }
@@ -291,10 +304,15 @@ public class MasSueldoPage extends BaseController {
     }
 
     public void scrollHastaBeneficios() {
+
         JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-        js.executeScript("window.scrollBy(0, 1700);");
+
+        js.executeScript(
+                "arguments[0].scrollIntoView({behavior:'instant', block:'center'});",
+                conoceTodosLosBeneficios
+        );
         try {
-            Thread.sleep(5000);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -305,43 +323,33 @@ public class MasSueldoPage extends BaseController {
     }
    //conoce nuestros planes
    public void seleccionarConoceLosPlanes() {
-
-       try {
-
-           JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-
-           js.executeScript("arguments[0].scrollIntoView({block:'center'});", ConoceLosPlanes);
-
-           Thread.sleep(2000);
-
-           js.executeScript("arguments[0].click();", ConoceLosPlanes);
-
-           Thread.sleep(3000);
-
-           for (String ventana : DriverContext.getDriver().getWindowHandles()) {
-               DriverContext.getDriver().switchTo().window(ventana);
+        try {
+            String ventanaPrincipal = DriverContext.getDriver().getWindowHandle();
+            JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
+            js.executeScript("arguments[0].scrollIntoView({block:'center'});", ConoceLosPlanes);
+            Thread.sleep(1000);
+            js.executeScript("arguments[0].click();", ConoceLosPlanes);
+            Thread.sleep(800);
+            for (String ventana : DriverContext.getDriver().getWindowHandles()) {
+                if (!ventana.equals(ventanaPrincipal)) {
+                    DriverContext.getDriver().switchTo().window(ventana);
+                   break;
+                }
            }
-
-           Thread.sleep(4000);
-
-       } catch (Exception e) {
-           e.printStackTrace();
+            Thread.sleep(800);
+            initPage();
+        } catch (Exception e) {
+            e.printStackTrace();
            throw new RuntimeException(e);
-       }
+        }
    }
     //verifico pagina planes
     public void verificarPaginaPlanes() {
-
         try {
-
-            Thread.sleep(8000);
-
+            Thread.sleep(1000);
             visualizarElemento(ConocenuestrosPlanes, 20);
-
             System.out.println("Página de planes cargada correctamente.");
-
         } catch (Exception e) {
-
             System.out.println("Error al verificar la página de planes.");
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -349,98 +357,65 @@ public class MasSueldoPage extends BaseController {
     }
     public void verificarTextoPlanes() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-            js.executeScript("arguments[0].scrollIntoView({block:'center'});",
-                    VentajasPlanes);
-            Thread.sleep(2000);
-
+            System.out.println("Realizando scroll hasta la sección de ventajas.");
+            // Hace scroll hasta el botón
+            js.executeScript("arguments[0].scrollIntoView({block:'center'});", VentajasPlanes);
+            Thread.sleep(800);
             visualizarElemento(VentajasPlanes, 20);
-
+            System.out.println("Elemento VentajasPlanes encontrado.");
             System.out.println("Texto descriptivo visualizado correctamente.");
-
         } catch (Exception e) {
-
             System.out.println("Error al verificar el texto descriptivo.");
             e.printStackTrace();
             throw new RuntimeException(e);
-
         }
     }
     //abro plan futuro
     public void verificarPlanFuturo() {
-
         try {
-
-            Thread.sleep(3000);
-
+            Thread.sleep(1000);
             JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-
             js.executeScript("arguments[0].scrollIntoView({block:'center'});",
                     tarjetaPlanFuturo);
-
-            Thread.sleep(2000);
-
+            Thread.sleep(800);
             visualizarElemento(tarjetaPlanFuturo, 20);
-
             System.out.println("Tarjeta Plan Futuro visualizada correctamente.");
-
         } catch (Exception e) {
-
             System.out.println("Error al verificar el Plan Futuro.");
             e.printStackTrace();
             throw new RuntimeException(e);
-
         }
     }
     public void verificarPlanScotiabank() {
-
         try {
-
-            Thread.sleep(3000);
-
+            Thread.sleep(1000);
             JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-
             js.executeScript("arguments[0].scrollIntoView({block:'center'});",
                     tarjetaPlanScotiabank);
-
-            Thread.sleep(2000);
-
+            Thread.sleep(800);
             visualizarElemento(tarjetaPlanScotiabank, 20);
-
             System.out.println("Tarjeta Plan Scotiabank visualizada correctamente.");
-
         } catch (Exception e) {
-
             System.out.println("Error al verificar el Plan Scotiabank.");
             e.printStackTrace();
             throw new RuntimeException(e);
-
         }
     }
     public void verificarPlanScotiabankPlus() {
-
         try {
-
-            Thread.sleep(3000);
-
+            Thread.sleep(1000);
             JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
-
             js.executeScript("arguments[0].scrollIntoView({block:'center'});",
                     tarjetaPlanScotiabankPlus);
-
-            Thread.sleep(2000);
-
+            Thread.sleep(800);
             visualizarElemento(tarjetaPlanScotiabankPlus, 20);
-
             System.out.println("Tarjeta Plan Scotiabank Plus visualizada correctamente.");
-
         } catch (Exception e) {
-
             System.out.println("Error al verificar el Plan Scotiabank Plus.");
             e.printStackTrace();
             throw new RuntimeException(e);
-
         }
     }
     public void scrollHastaCondicionesPlanFuturo() {
@@ -448,31 +423,20 @@ public class MasSueldoPage extends BaseController {
         js.executeScript("arguments[0].scrollIntoView(true);", condicionesPlanFuturo);
     }
     public String obtenerCondicionesPlanFuturo() {
-
         try {
-
-            Thread.sleep(3000);
-
+            Thread.sleep(1000);
             scrollHastaCondicionesPlanFuturo();
-
-            Thread.sleep(2000);
-
+            Thread.sleep(800);
             visualizarElemento(condicionesPlanFuturo, 20);
-
             JavascriptExecutor js =
                     (JavascriptExecutor) DriverContext.getDriver();
-
             String texto = (String) js.executeScript(
                     "return arguments[0].textContent;",
                     condicionesPlanFuturo);
-
             System.out.println("PLAN FUTURO:");
             System.out.println(texto);
-
             return texto.trim();
-
         } catch (Exception e) {
-
             System.out.println("Error al obtener las condiciones del Plan Futuro.");
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -480,40 +444,31 @@ public class MasSueldoPage extends BaseController {
     }
     public String obtenerCondicionesPlanScotiabank() {
         visualizarElemento(condicionesPlanScotiabank, 10);
-
         JavascriptExecutor js =
-                (JavascriptExecutor) DriverContext.getDriver();
-        String texto = (String) js.executeScript(
+                (JavascriptExecutor) DriverContext.getDriver();String texto = (String) js.executeScript(
                 "return arguments[0].textContent;",
                 condicionesPlanScotiabank);
-
-        System.out.println("SCOTIABANK:");
+                System.out.println("SCOTIABANK:");
         System.out.println(texto);
-
         return texto.trim();
     }
 
-
-public String obtenerCondicionesPlanScotiabankPlus() {
+    public String obtenerCondicionesPlanScotiabankPlus() {
     visualizarElemento(condicionesPlanScotiabankPlus, 10);
-
     JavascriptExecutor js =
             (JavascriptExecutor) DriverContext.getDriver();
 
     String texto = (String) js.executeScript(
             "return arguments[0].textContent;",
             condicionesPlanScotiabankPlus);
-
     System.out.println("SCOTIABANK PLUS:");
     System.out.println(texto);
-
     return texto.trim();
 }
     public void desplegarBeneficios() {
         visualizarElemento(Conocetodoslosbeneficios, 10);
         Conocetodoslosbeneficios.click();
     }
-
     public void verificarHasta50000ScotiaPesos() {
         visualizarElemento(Hasta50000ScotiaPesos, 10);
     }
@@ -521,25 +476,28 @@ public String obtenerCondicionesPlanScotiabankPlus() {
     public void verificarCuotasSinInteres() {
         visualizarElemento(CuotasSinInteres, 10);
     }
-
     public void verificarextraenlaacumulacion() {
         visualizarElemento(extraenlaacumulacion, 10);
     }
-
     public void verificarBeneficiosenInversiones() {
         visualizarElemento(BeneficiosenInversiones, 10);
     }
 
     public void verificarTasasPreferenciales() {
-        visualizarElemento(TasasPreferenciales, 10);
+        visualizarElemento(TasasPreferenciales, 20);
     }
 
     public void verificarSegurodeCesantia() {
-        visualizarElemento(SegurodeCesantia, 10);
+        visualizarElemento(SegurodeCesantia, 20);
     }
-
     public void verificarMisionesScotiaRewards() {
-        visualizarElemento(MisionesScotiaRewards, 10);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        visualizarElemento(MisionesScotiaRewards, 20);
     }
 }
 

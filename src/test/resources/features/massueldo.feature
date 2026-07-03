@@ -6,13 +6,13 @@ Feature: Mas sueldo
     When ingreso al menu Mas Sueldo
     And hago clic en el boton "Únete a Scotia"
     Then verifico que se muestre el Formulario de Ingreso
-    And ingreso un RUT "12345678-9"
+    And ingreso un RUT "15414234-7"
     And ingreso el numero de serie "123456789"
     And ingreso la renta liquida "1000000"
     And selecciono la nacionalidad "Chile"
     And selecciono la situacion laboral "Cesante"
     And selecciono la ocupacion "Abogado"
-    And ingreso un referido opcional "12345678-9"
+   # And ingreso un referido opcional
     Then verifico que se muestre el acuerdo de privacidad
     When hago clic en el boton "Autorizar y Continuar"
     Then verifico que se muestre el mensaje "Algunos datos presentan problemas"

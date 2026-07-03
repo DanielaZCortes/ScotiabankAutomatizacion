@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
         glue = {"StepDefinition"},
         plugin = {"pretty", "html:target/cucumber-report.html"},
         monochrome = true,
-        tags = "@caso4"
+        tags = "@caso1"
 
         //or @caso2 or @caso3 or @caso4"
 
