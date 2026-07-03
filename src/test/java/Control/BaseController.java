@@ -16,26 +16,43 @@ public class BaseController {
 
     public BaseController() {
         this.driver = DriverContext.getDriver();
-        if (this.driver == null) {
-            System.out.println("WebDriver no está inicializado!");
+        if (this.driver != null) {
+            initPage();
+        } else {
+            System.out.println("Advertencia: WebDriver no está inicializado. Se inicializará cuando sea disponible.");
         }
     }
 
     protected void initPage() {
         if (this.driver != null) {
             PageFactory.initElements(new AjaxElementLocatorFactory(this.driver, Constant.TIME_RESPONSE), this);
+            System.out.println("Elementos de página inicializados correctamente.");
+        } else {
+            System.out.println("No se pueden inicializar los elementos: WebDriver es null.");
         }
     }
 
     public boolean visualizarElemento(WebElement elementoWeb, int tiempoEspera) {
+
         try {
-            WebDriverWait wait2 = new WebDriverWait(DriverContext.getDriver(), Duration.ofSeconds(tiempoEspera));
-            wait2.until(ExpectedConditions.visibilityOf(elementoWeb));
-            System.out.println("Es visible el elemento web " + elementoWeb.getText());
+
+            WebDriverWait wait = new WebDriverWait(
+                    DriverContext.getDriver(),
+                    Duration.ofSeconds(tiempoEspera));
+
+            wait.until(ExpectedConditions.visibilityOf(elementoWeb));
+
+            System.out.println("Es visible el elemento web: "
+                    + elementoWeb.getText());
+
             return true;
+
         } catch (Exception e) {
-            System.out.println("No es visible el elemento web" + elementoWeb);
-            return false;
+
+            System.out.println("No es visible el elemento web.");
+            e.printStackTrace();
+
+            throw new RuntimeException(e);
         }
     }
 }

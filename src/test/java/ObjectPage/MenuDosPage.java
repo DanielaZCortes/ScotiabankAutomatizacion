@@ -11,6 +11,10 @@ import org.openqa.selenium.support.PageFactory;
 public class MenuDosPage extends BaseController {
     private WebDriver driver;
 
+    public MenuDosPage() {
+        super();
+        initPage();
+    }
 
     @FindBy(xpath = "//*[@id=\"siteContent\"]/div/div/div[2]/header/nav/div/div[3]/div/div/div/nav/ul/li[1]/a")
     private WebElement MasSueldo;

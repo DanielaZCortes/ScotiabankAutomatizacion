@@ -12,7 +12,6 @@ import javax.xml.xpath.XPath;
 
 public class MenuSuperiorPage extends BaseController {
 
-
     private WebDriver driver;
 
     //se declaran los objetos, elementos
