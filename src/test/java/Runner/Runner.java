@@ -10,10 +10,9 @@ import org.junit.runner.RunWith;
         glue = {"StepDefinition"},
         plugin = {"pretty", "html:target/cucumber-report.html"},
         monochrome = true,
-        tags = "@caso1"
+        tags = "@Marketplace"
 
         //or @caso2 or @caso3 or @caso4"
-
         // "@MenuSuperior" or @MenuDos or @SubMenu"
 )
 public class Runner {
