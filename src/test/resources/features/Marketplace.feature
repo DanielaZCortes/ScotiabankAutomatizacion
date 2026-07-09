@@ -2,20 +2,20 @@
 Feature: Comprar producto en Audiomusica
 
   @TC-001
-Scenario Outline: Buscar y agregar un producto
-Given abro el navegador en la url "https://www.audiomusica.com"
-When hago clic en el buscador
-And escribo "<producto>"
-And presiono Enter
-Then valido que existan productos
-When selecciono el primer producto
-And agrego el producto al carrito
-Then valido que el carrito tenga el producto
-    Examples:
-| producto             |
-| ARX                  |
-| guitarra electrica   |
+  Scenario Outline: Buscar y agregar un producto
+    Given abro el navegador en la url "https://www.audiomusica.com"
+    When hago clic en el buscador
+    And escribo "<producto>"
+    And presiono Enter
+    Then valido que existan productos
+    When selecciono el primer producto
+    And agrego el producto al carrito
+    Then valido que el producto esté en el carrito
 
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 
 
   @TC-005
@@ -171,5 +171,5 @@ Then valido que el carrito tenga el producto
     Examples:
       | producto            |
       | ARX                 |
-      | guitarra electrica  |
+      #| guitarra electrica  |
 

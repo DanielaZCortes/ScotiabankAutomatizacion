@@ -56,10 +56,6 @@ public class Marketplace {
         marketplacePage.agregarAlCarrito();
     }
 
-    @Then("valido que el carrito tenga el producto")
-    public void validoQueElCarritoTengaElProducto() {
-        Assert.assertTrue(marketplacePage.validarCarrito("ARX"));
-    }
 
     //productonoexiste
     @Then("valido que no existan productos")
@@ -71,9 +67,7 @@ public class Marketplace {
     //productoalcarro
     @Then("valido que el producto esté en el carrito")
     public void validoQueElProductoEsteEnElCarrito() {
-
         Assert.assertTrue(marketplacePage.validarProductoEnCarrito());
-
     }
 
     //cantidaddeproductos
@@ -197,7 +191,7 @@ public class Marketplace {
     }
     @Then("valido que el usuario permanezca sin sesión")
     public void validoQueElUsuarioPermanezcaSinSesion() {
-        Assert.assertTrue(marketplacePage.validarCorreoInvalido());
+        Assert.assertTrue(marketplacePage.validarMensajeError());
     }
 
     @Then("valido que ingreso al checkout")

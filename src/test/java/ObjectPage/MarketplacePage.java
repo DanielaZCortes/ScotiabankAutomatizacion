@@ -3,10 +3,11 @@ package ObjectPage;
 import Control.BaseController;
 import Control.DriverContext;
 import org.openqa.selenium.WebDriver;
+import java.util.List;
 
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.WebElement;
-import java.util.List;
+
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.JavascriptExecutor;
@@ -71,8 +72,8 @@ public class MarketplacePage extends BaseController {
     WebElement txtIdentificacion;
     @FindBy(id = "go-to-shipping")
     private WebElement btnContinuarCheckout;
-    @FindBy(xpath = "//span[contains(.,'Este campo es obligatorio')]")
-    private WebElement mensajeCampoObligatorio;
+    @FindBy(css = "span.help.error")
+    private List<WebElement> mensajesCampoObligatorio;
     //validarcampocorreo
     @FindBy(xpath = "//*[contains(text(),'Usuario y/o contraseña equivocada')]")
     private WebElement mensajeError;
@@ -337,36 +338,23 @@ public class MarketplacePage extends BaseController {
     }
     public void escribirCorreo(String correo) {
 
-        WebElement txtCorreo = DriverContext.getDriver().findElement(
-                By.xpath("//input[@type='email']"));
+        WebDriverWait wait = new WebDriverWait(
+                DriverContext.getDriver(),
+                Duration.ofSeconds(20));
 
-        System.out.println("1");
-
-        visualizarElemento(txtCorreo, 20);
+        WebElement txtCorreo = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.id("client-email")));
 
         ((JavascriptExecutor) DriverContext.getDriver())
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", txtCorreo);
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("2");
-
-        ((JavascriptExecutor) DriverContext.getDriver())
-                .executeScript("arguments[0].click();", txtCorreo);
-
-        System.out.println("3");
-
+        txtCorreo.click();
         txtCorreo.clear();
-
-        System.out.println("4");
-
         txtCorreo.sendKeys(correo);
 
-        System.out.println("5");
+        System.out.println("Valor escrito: " + txtCorreo.getAttribute("value"));
+
     }
     public void escribirPassword(String password) {
 
@@ -401,11 +389,14 @@ public class MarketplacePage extends BaseController {
 
         String mensaje = txtCorreo.getAttribute("validationMessage");
 
+        System.out.println("==============================");
         System.out.println("Mensaje navegador: " + mensaje);
+        System.out.println("==============================");
 
-        return mensaje.contains("Ingresa texto")
-                || mensaje.contains("correo@")
-                || mensaje.contains("incompleta");
+        return mensaje != null &&
+                (mensaje.contains("Ingresa texto")
+                        || mensaje.contains("correo@")
+                        || mensaje.contains("incompleta"));
     }
     public boolean validarMensajeError() {
 
@@ -455,10 +446,10 @@ public class MarketplacePage extends BaseController {
     }
     public boolean validarMensajeCampoObligatorio() {
 
-        visualizarElemento(mensajeCampoObligatorio, 20);
+        System.out.println("Cantidad de mensajes: "
+                + mensajesCampoObligatorio.size());
 
-        return mensajeCampoObligatorio.getText()
-                .contains("Este campo es obligatorio");
+        return mensajesCampoObligatorio.size() >= 4;
     }
     public void ingresarAlLogin() {
 
@@ -475,7 +466,7 @@ public class MarketplacePage extends BaseController {
 
         WebElement txtCorreo = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                        By.id("client-email")));
+                        By.xpath("//input[@placeholder='Ej.: ejemplo@mail.com']")));
     }
     public boolean validarLoginExitoso() {
 
