@@ -3,7 +3,7 @@ package ObjectPage;
 import Control.BaseController;
 import Control.DriverContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
+
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.WebElement;
 import java.util.List;
@@ -28,43 +28,34 @@ public class MarketplacePage extends BaseController {
         initPage();
     }
 
+
     @FindBy(xpath = "//input[contains(@id,'downshift')]")
     private WebElement txtBuscador;
-
     @FindBy(css = "button.vtex-modal-layout-0-x-closeButton")
     private WebElement btnCerrarPopup;
-
     @FindBy(linkText = "Guitarras")
     private WebElement lnkGuitarras;
-
     @FindBy(css = ".vtex-store-drawer-0-x-openIconContainer")
     private WebElement btnMenu;
-
     @FindBy(xpath = "//span[contains(text(),'GUITARRAS')]")
     private WebElement btnGuitarras;
-    @FindBy(css = ".vtex-add-to-cart-button-0-x-buttonText")
-    private WebElement btnAgregarCarrito;
+
     @FindBy(xpath = "//h1[contains(text(),'Y no encuentro nada')]")
     private WebElement lblSinResultados;
-    @FindBy(css = ".product-name a")
-    private WebElement productoCarrito;
-    @FindBy(css = "a.item-quantity-change-increment")
-    private WebElement btnMasCantidad;
-    @FindBy(id = "proceed-to-checkout")
-    private WebElement btnIrAlCarro;
+    @FindBy(css = ".vtex-add-to-cart-button-0-x-buttonText")
+    private WebElement btnAgregarCarrito;
     @FindBy(xpath = "//*[contains(text(),'TOTAL')]")
     private WebElement lblSubtotal;
+
     //validocantidad
     @FindBy(css = "input[id*='item-quantity']")
     private WebElement txtCantidad;
     //Vaciarcarro
-    @FindBy(css = "a.item-link-remove")
-    private WebElement btnEliminar;
+
     @FindBy(xpath = "//h2[contains(.,'carrito está vacío')]")
     private WebElement lblCarritoVacio;
     //validar
-    @FindBy(id = "client-email")
-    private WebElement txtCorreo;
+
     @FindBy(xpath = "//input[@type='password']")
     private WebElement txtPassword;
     @FindBy(xpath = "//button[@type='submit']")
@@ -88,6 +79,32 @@ public class MarketplacePage extends BaseController {
     @FindBy(xpath = "//*[contains(text(),'Ingresa texto después del signo')]")
     private WebElement lblCorreoInvalido;
 
+    private WebElement obtenerBtnAgregarCarrito() {
+
+        return DriverContext.getDriver().findElement(
+                By.xpath("//button[.//span[contains(text(),'Agregar')]]"));
+    }
+
+    private WebElement obtenerProductoCarrito() {
+        return DriverContext.getDriver().findElement(
+                By.cssSelector(".product-name a"));
+    }
+
+    private WebElement obtenerBtnMasCantidad() {
+        return DriverContext.getDriver().findElement(
+                By.cssSelector("a.item-quantity-change-increment"));
+    }
+
+    private WebElement obtenerBtnIrAlCarro() {
+        return DriverContext.getDriver().findElement(
+                By.id("proceed-to-checkout"));
+    }
+
+    private WebElement obtenerBtnEliminar() {
+        return DriverContext.getDriver().findElement(
+                By.cssSelector("a.item-link-remove"));
+    }
+
 
 
     // métodos
@@ -100,19 +117,19 @@ public class MarketplacePage extends BaseController {
 
         try {
 
-            visualizarElemento(btnCerrarPopup, 5);
+            Thread.sleep(3000);
 
-            JavascriptExecutor js = (JavascriptExecutor) DriverContext.getDriver();
+            WebElement btnCerrar = DriverContext.getDriver().findElement(
+                    By.cssSelector("button.vtex-modal-layout-0-x-closeButton"));
 
-            js.executeScript("arguments[0].click();", btnCerrarPopup);
+            ((JavascriptExecutor) DriverContext.getDriver())
+                    .executeScript("arguments[0].click();", btnCerrar);
 
             Thread.sleep(1000);
 
-            System.out.println("Popup cerrado.");
-
         } catch (Exception e) {
 
-            System.out.println("Popup no apareció.");
+            System.out.println("No apareció popup.");
 
         }
     }
@@ -134,17 +151,19 @@ public class MarketplacePage extends BaseController {
 
         txtBuscador.sendKeys(Keys.ENTER);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new WebDriverWait(
+                DriverContext.getDriver(),
+                Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(".vtex-product-summary-2-x-container")));
     }
 
     public boolean existenProductos() {
 
         productos = DriverContext.getDriver().findElements(
                 By.cssSelector(".vtex-product-summary-2-x-container"));
+
+        System.out.println("Cantidad de productos encontrados: " + productos.size());
 
         if (productos.isEmpty()) {
             return false;
@@ -165,16 +184,17 @@ public class MarketplacePage extends BaseController {
         ((JavascriptExecutor) DriverContext.getDriver())
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", productos.get(0));
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new WebDriverWait(
+                DriverContext.getDriver(),
+                Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(productos.get(0)));
 
         Actions actions = new Actions(DriverContext.getDriver());
         actions.moveToElement(productos.get(0)).click().perform();
     }
     public void irAlCarrito() {
+
+        WebElement btnIrAlCarro = obtenerBtnIrAlCarro();
 
         visualizarElemento(btnIrAlCarro, 10);
 
@@ -182,6 +202,7 @@ public class MarketplacePage extends BaseController {
 
         ((JavascriptExecutor) DriverContext.getDriver())
                 .executeScript("arguments[0].click();", btnIrAlCarro);
+
         System.out.println("Hice click");
 
         try {
@@ -189,6 +210,7 @@ public class MarketplacePage extends BaseController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         System.out.println("URL ACTUAL: " + DriverContext.getDriver().getCurrentUrl());
     }
 
@@ -207,9 +229,6 @@ public class MarketplacePage extends BaseController {
 
     public void agregarAlCarrito() {
 
-        ((JavascriptExecutor) DriverContext.getDriver())
-                .executeScript("arguments[0].scrollIntoView({block:'center'});", btnAgregarCarrito);
-
         visualizarElemento(btnAgregarCarrito, 10);
 
         System.out.println("Antes del click");
@@ -218,6 +237,14 @@ public class MarketplacePage extends BaseController {
                 .executeScript("arguments[0].click();", btnAgregarCarrito);
 
         System.out.println("Después del click");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("URL: " + DriverContext.getDriver().getCurrentUrl());
     }
 
     public boolean validarCarritoVacio() {
@@ -240,7 +267,10 @@ public class MarketplacePage extends BaseController {
             return false;
         }
     }
-    public boolean validarCarrito() {
+    public boolean validarCarrito(String producto) {
+
+        WebElement productoCarrito = DriverContext.getDriver().findElement(
+                By.xpath("//*[contains(text(),'" + producto + "')]"));
 
         visualizarElemento(productoCarrito,20);
 
@@ -258,16 +288,19 @@ public class MarketplacePage extends BaseController {
     //productoalcarrocantidad
     public boolean validarProductoEnCarrito() {
 
+        WebElement btnIrAlCarro = obtenerBtnIrAlCarro();
+
         visualizarElemento(btnIrAlCarro, 10);
 
         return btnIrAlCarro.isDisplayed();
-
     }
     public void aumentarCantidad() {
 
-        visualizarElemento(btnMasCantidad, 10);
-        btnMasCantidad.click();
+        WebElement btnMasCantidad = obtenerBtnMasCantidad();
 
+        visualizarElemento(btnMasCantidad, 10);
+
+        btnMasCantidad.click();
     }
     //validocantidad
     public boolean validarCantidad() {
@@ -279,9 +312,12 @@ public class MarketplacePage extends BaseController {
     }
     //vaciarcarro
     public void eliminarProducto() {
-        visualizarElemento(btnEliminar, 10);
-        btnEliminar.click();
 
+        WebElement btnEliminar = obtenerBtnEliminar();
+
+        visualizarElemento(btnEliminar, 10);
+
+        btnEliminar.click();
     }
 
     //refrech
@@ -293,13 +329,16 @@ public class MarketplacePage extends BaseController {
 
     public boolean validarProductoPermanece() {
 
-        visualizarElemento(productoCarrito,20);
+        WebElement productoCarrito = obtenerProductoCarrito();
+
+        visualizarElemento(productoCarrito, 20);
 
         return productoCarrito.isDisplayed();
-
     }
-    //validar
     public void escribirCorreo(String correo) {
+
+        WebElement txtCorreo = DriverContext.getDriver().findElement(
+                By.xpath("//input[@type='email']"));
 
         System.out.println("1");
 
@@ -353,14 +392,10 @@ public class MarketplacePage extends BaseController {
         btnEntrar.click();
 
     }
-    //invalid
-    public boolean validarMensajeError(){
-        visualizarElemento(lblErrorLogin,10);
-        return lblErrorLogin.getText()
-                .contains("Usuario y/o contraseña equivocada");
-
-    }
     public boolean validarCorreoInvalido() {
+
+        WebElement txtCorreo = DriverContext.getDriver().findElement(
+                By.id("client-email"));
 
         visualizarElemento(txtCorreo, 10);
 
@@ -371,6 +406,13 @@ public class MarketplacePage extends BaseController {
         return mensaje.contains("Ingresa texto")
                 || mensaje.contains("correo@")
                 || mensaje.contains("incompleta");
+    }
+    public boolean validarMensajeError() {
+
+        visualizarElemento(lblErrorLogin,10);
+
+        return lblErrorLogin.getText()
+                .contains("Usuario y/o contraseña equivocada");
     }
     public void completarCompra() {
 
@@ -418,7 +460,6 @@ public class MarketplacePage extends BaseController {
         return mensajeCampoObligatorio.getText()
                 .contains("Este campo es obligatorio");
     }
-    //validarcampocorreo
     public void ingresarAlLogin() {
 
         cerrarPopup();
@@ -432,13 +473,16 @@ public class MarketplacePage extends BaseController {
                 DriverContext.getDriver(),
                 Duration.ofSeconds(20));
 
-        wait.until(ExpectedConditions.visibilityOf(txtCorreo));
+        WebElement txtCorreo = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                        By.id("client-email")));
     }
     public boolean validarLoginExitoso() {
-        visualizarElemento(btnMiCuenta, 10);
+
+        visualizarElemento(btnMiCuenta,10);
+
         return btnMiCuenta.isDisplayed();
     }
-
 
     public boolean validarCategoria() {
 
@@ -455,7 +499,7 @@ public class MarketplacePage extends BaseController {
 
     }
 
-
-
-
 }
+
+
+

@@ -1,44 +1,56 @@
 @Marketplace
 Feature: Comprar producto en Audiomusica
-  Scenario: Buscar y agregar un producto
-    Given abro el navegador en la url "https://www.audiomusica.com"
-    When hago clic en el buscador
-    And escribo "ARX"
-    And presiono Enter
-    Then valido que existan productos
-    When selecciono el primer producto
-    And agrego el producto al carrito
-    Then valido que el carrito tenga el producto
- # @TC-002
-  #Scenario: Navegación por categoría
-   # Given abro el navegador en la url "https://www.audiomusica.com"
-    #When selecciono la categoría "Guitarras"
-    #Then valido que estoy en la categoría
+
+  @TC-001
+Scenario Outline: Buscar y agregar un producto
+Given abro el navegador en la url "https://www.audiomusica.com"
+When hago clic en el buscador
+And escribo "<producto>"
+And presiono Enter
+Then valido que existan productos
+When selecciono el primer producto
+And agrego el producto al carrito
+Then valido que el carrito tenga el producto
+    Examples:
+| producto             |
+| ARX                  |
+| guitarra electrica   |
+
+
 
   @TC-005
-  Scenario: Buscar un producto inexistente
+  Scenario Outline: Buscar un producto inexistente
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "zzzdddd123"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que no existan productos
+    Examples:
+      | producto    |
+      | zzzdddd123  |
+      | qwerty98765 |
+      | abcxyz000   |
 
   @TC-006
-  Scenario: Agregar producto al carrito
+  Scenario Outline: Agregar producto al carrito
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
     And agrego el producto al carrito
     Then valido que el producto esté en el carrito
 
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
   @TC-007
-  Scenario: Agregar múltiples unidades
+  Scenario Outline: Agregar múltiples unidades
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
@@ -47,12 +59,16 @@ Feature: Comprar producto en Audiomusica
     And aumento la cantidad del producto
     Then valido que la cantidad sea 2
     And valido que el subtotal se actualice
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 
   @TC-008
-  Scenario: Eliminar producto del carrito
+  Scenario Outline: Eliminar producto del carrito
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
@@ -60,12 +76,16 @@ Feature: Comprar producto en Audiomusica
     And ingreso al carrito
     When elimino el producto
     Then valido que el carrito quede vacío
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 
   @TC-009
-  Scenario: Carrito persistente
+  Scenario Outline: Carrito persistente
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
@@ -73,6 +93,10 @@ Feature: Comprar producto en Audiomusica
     And ingreso al carrito
     When refresco la página
     Then valido que el producto permanezca en el carrito
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 
   @TC-010
   Scenario: Login exitoso
@@ -96,10 +120,10 @@ Feature: Comprar producto en Audiomusica
 
 
   @TC-014
-  Scenario: Inicio de Checkout
+  Scenario Outline: Inicio de Checkout
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
@@ -108,25 +132,16 @@ Feature: Comprar producto en Audiomusica
     And presiono completar la compra
     Then valido que ingreso al checkout
 
-  @TC-019
-  Scenario: Validar campos obligatorios del checkout
-    Given abro el navegador en la url "https://www.audiomusica.com"
-    When hago clic en el buscador
-    And escribo "ARX"
-    And presiono Enter
-    Then valido que existan productos
-    When selecciono el primer producto
-    And agrego el producto al carrito
-    And presiono proceder al pago
-    And presiono continuar sin completar los datos
-    Then valido mensaje de campos obligatorios
-
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 
   @TC-018
-  Scenario: Validar formato de correo
+  Scenario Outline: Validar formato de correo
     Given abro el navegador en la url "https://www.audiomusica.com"
     When hago clic en el buscador
-    And escribo "ARX"
+    And escribo "<producto>"
     And presiono Enter
     Then valido que existan productos
     When selecciono el primer producto
@@ -135,4 +150,26 @@ Feature: Comprar producto en Audiomusica
     And escribo el correo "correo@"
     And presiono continuar
     Then valido mensaje de correo invalido
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
+
+
+  @TC-019
+  Scenario Outline: Validar campos obligatorios del checkout
+    Given abro el navegador en la url "https://www.audiomusica.com"
+    When hago clic en el buscador
+    And escribo "<producto>"
+    And presiono Enter
+    Then valido que existan productos
+    When selecciono el primer producto
+    And agrego el producto al carrito
+    And presiono proceder al pago
+    And presiono continuar sin completar los datos
+    Then valido mensaje de campos obligatorios
+    Examples:
+      | producto            |
+      | ARX                 |
+      | guitarra electrica  |
 

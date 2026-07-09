@@ -58,7 +58,7 @@ public class Marketplace {
 
     @Then("valido que el carrito tenga el producto")
     public void validoQueElCarritoTengaElProducto() {
-        Assert.assertTrue(marketplacePage.validarCarrito());
+        Assert.assertTrue(marketplacePage.validarCarrito("ARX"));
     }
 
     //productonoexiste
